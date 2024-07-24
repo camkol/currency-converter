@@ -5,7 +5,7 @@ import "./App.css";
 
 function App() {
   const [conFrom, setConFrom] = useState("USD");
-  const [conTo, setConTo] = useState("USD");
+  const [conTo, setConTo] = useState("EUR");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
 
@@ -42,10 +42,11 @@ function App() {
 
   return (
     <div>
+      <h2>My Version</h2>
       <Input input={input} setInput={setInput} />
       <Selection onConvert={handleFrom} />
       <Selection onConvert={handleTo} />
-      <Output output={output} />
+      <Output output={output} currency={conTo} />
     </div>
   );
 }
@@ -74,6 +75,10 @@ function Selection({ onConvert }) {
   );
 }
 
-function Output({ output }) {
-  return <p>{output}</p>;
+function Output({ output, currency }) {
+  return (
+    <p>
+      {output} {currency}
+    </p>
+  );
 }
