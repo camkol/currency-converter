@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 // `https://api.frankfurter.app/latest?amount=100&from=EUR&to=USD`
 
 function App() {
-  const [conFrom, setConFrom] = useState("");
-  const [conTo, setConTo] = useState("");
+  const [conFrom, setConFrom] = useState("USD");
+  const [conTo, setConTo] = useState("USD");
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
 
   function handleFrom(e) {
     setConFrom(e);
@@ -15,9 +17,30 @@ function App() {
     setConTo(e);
   }
 
+  useEffect(
+    function () {
+      async function fetchConvert() {
+        try {
+          const response = await fetch(
+            `https://api.frankfurter.app/latest?amount=${input}&from=${conFrom}&to=${conTo}`
+          );
+
+          const data = await response.json();
+
+          console.log(data);
+        } catch (err) {
+          console.log(err.message);
+        }
+      }
+
+      fetchConvert();
+    },
+    [input]
+  );
+
   return (
     <div>
-      <Input />
+      <Input input={input} setInput={setInput} />
       <Selection onConvert={handleFrom} />
       <Selection onConvert={handleTo} />
       <Output />
@@ -27,8 +50,8 @@ function App() {
 
 export default App;
 
-function Input() {
-  return <input type="text" />;
+function Input({ input, setInput }) {
+  return <input type="text" onChange={(e) => setInput(e.target.value)} />;
 }
 
 function Selection({ onConvert }) {
