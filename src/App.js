@@ -20,6 +20,7 @@ function App() {
   useEffect(
     function () {
       async function fetchConvert() {
+        if (!input || !conFrom || !conTo) return;
         try {
           const response = await fetch(
             `https://api.frankfurter.app/latest?amount=${input}&from=${conFrom}&to=${conTo}`
@@ -27,7 +28,8 @@ function App() {
 
           const data = await response.json();
 
-          console.log(data);
+          console.log(data.rates[conTo]);
+          setOutput(data.rates[conTo]);
         } catch (err) {
           console.log(err.message);
         }
@@ -35,7 +37,7 @@ function App() {
 
       fetchConvert();
     },
-    [input]
+    [input, conFrom, conTo]
   );
 
   return (
@@ -43,14 +45,14 @@ function App() {
       <Input input={input} setInput={setInput} />
       <Selection onConvert={handleFrom} />
       <Selection onConvert={handleTo} />
-      <Output />
+      <Output output={output} />
     </div>
   );
 }
 
 export default App;
 
-function Input({ input, setInput }) {
+function Input({ setInput }) {
   return <input type="text" onChange={(e) => setInput(e.target.value)} />;
 }
 
@@ -72,6 +74,6 @@ function Selection({ onConvert }) {
   );
 }
 
-function Output() {
-  return <p>OUTPUT</p>;
+function Output({ output }) {
+  return <p>{output}</p>;
 }
